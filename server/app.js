@@ -2,10 +2,12 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const routes = require("./routes/routes");
 
 dotenv.config({ path: "./config.env" });
 
 app.use(express.json());
+app.use(routes);
 
 const DB = process.env.DATABASE.replace(
   "<PASSWORD>",
