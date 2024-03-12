@@ -5,6 +5,7 @@ const bookSchema = new mongoose.Schema({
     type: String,
     required: [true, "a book must have a title"],
     unique: true,
+    trim: true,
   },
   author: {
     type: String,
@@ -15,6 +16,22 @@ const bookSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  createdDate: {
+    type: Date,
+    default: Date.now(),
+  },
+  thoughts: {
+    type: String,
+    trim: true,
+  },
+  quotes: {
+    types: String,
+    trim: true,
+  },
+  coverImage: {
+    type: String,
+  },
+  images: [String],
 });
 
 const Book = mongoose.model("Book", bookSchema); //Starts with capital letter a naming convention to say we are dealing with model

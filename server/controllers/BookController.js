@@ -50,3 +50,42 @@ exports.createBook = async (req, res) => {
     });
   }
 };
+
+exports.updateBook = async (req, res) => {
+  try {
+    const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(201).json({
+      status: "success",
+      data: {
+        updatedBook,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "failed",
+      message: {
+        err,
+      },
+    });
+  }
+};
+
+exports.deleteBook = async (req, res) => {
+  try {
+    await Book.findByIdAndDelete(req.params.id);
+
+    res.status(201).json({
+      status: "success",
+      data: null,
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "failed",
+      message: err,
+    });
+  }
+};

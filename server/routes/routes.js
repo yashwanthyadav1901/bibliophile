@@ -8,6 +8,9 @@ Router.route("/")
   .get(BookController.getAllBooks)
   .post(BookController.createBook);
 
-Router.route("/:id").get(BookController.getBook);
+Router.route("/:id")
+  .get(BookController.getBook)
+  .patch(BookController.updateBook)
+  .delete(BookController.deleteBook);
 
 module.exports = Router;
