@@ -24,8 +24,8 @@ const bookSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  quotes: {
-    types: String,
+  favouriteQuotes: {
+    type: String,
     trim: true,
   },
   coverImage: {

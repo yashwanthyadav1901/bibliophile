@@ -2,7 +2,14 @@ const Book = require("./../models/Bookmodels");
 
 exports.getAllBooks = async (req, res) => {
   try {
-    const books = await Book.find();
+    const query = Book.find();
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ");
+      query = query.sort(sortBy);
+    }
+
+    const books = await query;
     res.status(201).json({
       status: "success",
       data: {
