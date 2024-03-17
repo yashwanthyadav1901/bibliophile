@@ -4,7 +4,7 @@ const Book = require("../models/Bookmodels");
 
 const Router = express.Router();
 
-Router.route("/")
+Router.route("/books")
   .get(BookController.getAllBooks)
   .post(BookController.createBook);
 
