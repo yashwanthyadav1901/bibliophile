@@ -3,6 +3,7 @@ const app = express();
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const routes = require("./routes/routes");
+const ErrorMiddleware = require("./middleware/ErrorMiddleware");
 
 dotenv.config({ path: "./config.env" });
 
@@ -22,6 +23,8 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => console.log("Database connection successful"));
+
+app.use(ErrorMiddleware);
 
 const port = process.env.PORT || 3000;
 

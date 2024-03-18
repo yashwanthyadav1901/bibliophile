@@ -34,10 +34,17 @@ exports.getAllBooks = async (req, res) => {
       length: books.length,
     });
   } catch (err) {
-    res.status(400).json({
-      status: "failed",
-      message: err,
-    });
+    let status = 400;
+    let message = err;
+    let extraDetails = "fail";
+
+    const error = {
+      status,
+      message,
+      extraDetails,
+    };
+
+    next(error);
   }
 };
 
@@ -51,10 +58,17 @@ exports.getBook = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(400).json({
-      status: "failed",
-      message: err,
-    });
+    let status = 404;
+    let message = err;
+    let extraDetails = "not found";
+
+    const error = {
+      status,
+      message,
+      extraDetails,
+    };
+
+    next(error);
   }
 };
 
@@ -68,10 +82,17 @@ exports.createBook = async (req, res) => {
       },
     });
   } catch (err) {
-    res.status(400).json({
-      status: "Failed",
-      message: err,
-    });
+    let status = 400;
+    let message = err;
+    let extraDetails = "fail";
+
+    const error = {
+      status,
+      message,
+      extraDetails,
+    };
+
+    next(error);
   }
 };
 
@@ -82,19 +103,24 @@ exports.updateBook = async (req, res) => {
       runValidators: true,
     });
 
-    res.status(201).json({
+    res.status(200).json({
       status: "success",
       data: {
         updatedBook,
       },
     });
   } catch (err) {
-    res.status(400).json({
-      status: "failed",
-      message: {
-        err,
-      },
-    });
+    let status = 400;
+    let message = err;
+    let extraDetails = "fail";
+
+    const error = {
+      status,
+      message,
+      extraDetails,
+    };
+
+    next(error);
   }
 };
 
@@ -102,14 +128,21 @@ exports.deleteBook = async (req, res) => {
   try {
     await Book.findByIdAndDelete(req.params.id);
 
-    res.status(201).json({
+    res.status(200).json({
       status: "success",
       data: null,
     });
   } catch (err) {
-    res.status(400).json({
-      status: "failed",
-      message: err,
-    });
+    let status = 400;
+    let message = err;
+    let extraDetails = "fail";
+
+    const error = {
+      status,
+      message,
+      extraDetails,
+    };
+
+    next(error);
   }
 };

@@ -13,4 +13,11 @@ Router.route("/:id")
   .patch(BookController.updateBook)
   .delete(BookController.deleteBook);
 
+Router.route("*").all((req, res) => {
+  res.status(404).json({
+    status: "fail",
+    message: `can't find ${req.originalUrl} on this server.`,
+  });
+});
+
 module.exports = Router;
