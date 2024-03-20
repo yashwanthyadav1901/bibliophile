@@ -1,9 +1,23 @@
 const Book = require("./../models/Bookmodels");
 const multer = require("multer");
+const fs = require("fs");
 
-const upload = multer({ dest: "uploads/" });
+const path = require("path");
 
-exports.getAllBooks = async (req, res) => {
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "assets/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+exports.uploadPhoto = upload.single("coverImage");
+
+exports.getAllBooks = async (req, res, next) => {
   try {
     let { title, sort } = req.query;
     let queryObject = {};
@@ -48,7 +62,7 @@ exports.getAllBooks = async (req, res) => {
   }
 };
 
-exports.getBook = async (req, res) => {
+exports.getBook = async (req, res, next) => {
   try {
     const book = await Book.findById(req.params.id);
     res.status(201).json({
@@ -72,9 +86,20 @@ exports.getBook = async (req, res) => {
   }
 };
 
-exports.createBook = async (req, res) => {
+exports.createBook = async (req, res, next) => {
   try {
-    const newBook = await Book.create(req.body);
+    const { title, author, rating, thoughts, favouriteQuotes } = req.body;
+    const coverImage = req.file ? req.file.path : null;
+    console.log(coverImage);
+    console.log(req.file);
+    const newBook = await Book.create({
+      title,
+      author,
+      rating,
+      thoughts,
+      favouriteQuotes,
+      coverImage: coverImage ? `/${coverImage}` : null,
+    });
     res.status(201).json({
       status: "success",
       data: {
@@ -96,7 +121,7 @@ exports.createBook = async (req, res) => {
   }
 };
 
-exports.updateBook = async (req, res) => {
+exports.updateBook = async (req, res, next) => {
   try {
     const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -124,25 +149,64 @@ exports.updateBook = async (req, res) => {
   }
 };
 
-exports.deleteBook = async (req, res) => {
+// exports.deleteBook = async (req, res, next) => {
+//   try {
+//     console.log(req.body);
+//     await Book.findByIdAndDelete(req.params.id);
+
+//     res.status(200).json({
+//       status: "success",
+//       data: null,
+//     });
+//   } catch (err) {
+//     let status = 400;
+//     let message = err;
+//     let extraDetails = "fail";
+
+//     const error = {
+//       status,
+//       message,
+//       extraDetails,
+//     };
+
+//     next(error);
+//   }
+// };
+
+exports.deleteBook = async (req, res, next) => {
   try {
-    await Book.findByIdAndDelete(req.params.id);
+    const book = await Book.findByIdAndDelete(req.params.id);
+
+    if (!book) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Book not found.",
+      });
+    }
+
+    // Extract the filename or path of the associated image from the book document
+    const imagePath = book.coverImage; // Assuming coverImage contains the path or filename of the image
+
+    if (imagePath) {
+      // If the image path exists, delete the image file
+      fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error("Error deleting image file:", err);
+          // Log the error, but continue with the deletion of the book document
+        }
+      });
+    }
 
     res.status(200).json({
       status: "success",
       data: null,
     });
   } catch (err) {
-    let status = 400;
-    let message = err;
-    let extraDetails = "fail";
-
-    const error = {
-      status,
-      message,
-      extraDetails,
-    };
-
-    next(error);
+    // Handle errors
+    console.error("Error deleting book:", err);
+    res.status(500).json({
+      status: "error",
+      message: "Internal server error.",
+    });
   }
 };

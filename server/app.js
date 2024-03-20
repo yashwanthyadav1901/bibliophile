@@ -5,10 +5,14 @@ const mongoose = require("mongoose");
 const routes = require("./routes/routes");
 const ErrorMiddleware = require("./middleware/ErrorMiddleware");
 
+
 dotenv.config({ path: "./config.env" });
 
 app.use(express.json());
 app.use(routes);
+
+
+app.use("/assets", express.static("assets"));
 
 const DB = process.env.DATABASE.replace(
   "<PASSWORD>",

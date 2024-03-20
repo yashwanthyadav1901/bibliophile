@@ -18,7 +18,7 @@ const bookSchema = new mongoose.Schema({
   },
   createdDate: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
   thoughts: {
     type: String,

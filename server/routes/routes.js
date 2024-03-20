@@ -1,12 +1,17 @@
 const express = require("express");
 const BookController = require("./../controllers/BookController");
-const Book = require("../models/Bookmodels");
+const createBookSchema = require("./../validators/createBookValidator");
+const validate = require("./../middleware/validateMiddleware");
 
 const Router = express.Router();
 
 Router.route("/books")
   .get(BookController.getAllBooks)
-  .post(BookController.createBook);
+  .post(
+    validate(createBookSchema),
+    BookController.uploadPhoto,
+    BookController.createBook
+  );
 
 Router.route("/:id")
   .get(BookController.getBook)
